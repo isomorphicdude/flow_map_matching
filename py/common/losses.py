@@ -183,9 +183,7 @@ def lagrangian_distill(
     b_eval = apply_b(b_params, t, Xst_Is, label, train=False)
 
     # compute the time derivative at the evaluation point
-    dt_Xst = X.apply(
-        params, s, t, Xst_Is, label, train=True, method="partial_t", rngs=rng2
-    )
+    dt_Xst = X.apply(params, s, t, Is, label, train=True, method="partial_t", rngs=rng2)
 
     # minimize square residual
     return np.sum((dt_Xst - b_eval) ** 2)
