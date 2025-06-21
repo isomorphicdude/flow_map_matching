@@ -904,6 +904,7 @@ def parse_command_line_arguments():
     parser.add_argument("--wandb_project", type=str)
     parser.add_argument("--output_name", type=str)
     parser.add_argument("--output_folder", type=str)
+    parser.add_argument("--dataset_folder", type=str)
     parser.add_argument("--slurm_id", type=int)
 
     return parser.parse_args()
@@ -959,6 +960,7 @@ def setup_config_dict():
     cfg.wandb_entity = args.wandb_entity
     cfg.output_folder = args.output_folder
     cfg.output_name = f"{args.output_name}_{args.slurm_id}"
+    cfg.dataset_folder = args.dataset_folder
     cfg.slurm_id = args.slurm_id
     cfg.ema_facs = [0.9999]
     cfg.ndevices = jax.local_device_count()
