@@ -770,7 +770,7 @@ def setup_base(
 
         @functools.partial(jax.jit, static_argnums=(0,))
         def sample_rho0(bs: int, key: np.ndarray):
-            return cfg.gaussian_scale * jax.random.normal(
+            return cfg.rescale * jax.random.normal(
                 key, shape=(bs, *ex_input.shape)
             )
 
@@ -847,6 +847,13 @@ def setup_target(cfg: config_dict.ConfigDict, prng_key: np.ndarray) -> np.ndarra
     else:
         raise ValueError("Specified target density is not implemented.")
 
+    # compute standard deviation of the dataset
+    if cfg.gaussian_scale == "adaptive":
+        cfg.rescale = float(np.std(x1s))
+        print(f"Rescaling the Gaussian base density by {cfg.rescale}.")
+    else:
+        cfg.rescale = 1.0
+
     return cfg, x1s, labels, prng_key
 
 
@@ -896,7 +903,7 @@ def parse_command_line_arguments():
     parser.add_argument("--warmup_steps", type=int)
     parser.add_argument("--loss_type", type=str)
     parser.add_argument("--base", type=str)
-    parser.add_argument("--gaussian_scale", type=float)
+    parser.add_argument("--gaussian_scale", type=str)
     parser.add_argument("--target", type=str)
     parser.add_argument("--device_type", type=str)
     parser.add_argument("--wandb_name", type=str)
@@ -904,6 +911,7 @@ def parse_command_line_arguments():
     parser.add_argument("--wandb_project", type=str)
     parser.add_argument("--output_name", type=str)
     parser.add_argument("--output_folder", type=str)
+    parser.add_argument("--dataset_folder", type=str)
     parser.add_argument("--slurm_id", type=int)
 
     return parser.parse_args()
@@ -959,6 +967,7 @@ def setup_config_dict():
     cfg.wandb_entity = args.wandb_entity
     cfg.output_folder = args.output_folder
     cfg.output_name = f"{args.output_name}_{args.slurm_id}"
+    cfg.dataset_folder = args.dataset_folder
     cfg.slurm_id = args.slurm_id
     cfg.ema_facs = [0.9999]
     cfg.ndevices = jax.local_device_count()

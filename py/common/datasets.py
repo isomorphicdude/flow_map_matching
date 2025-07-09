@@ -26,10 +26,10 @@ def get_dataset(cfg: config_dict.ConfigDict):
     if cfg.target == "mnist":
         mnist = {
             "train": torchvision.datasets.MNIST(
-                "/scratch/nb3397/datasets", train=True, download=True
+                cfg.dataset_folder, train=True, download=True
             ),
             "test": torchvision.datasets.MNIST(
-                "/scratch/nb3397/datasets", train=False, download=True
+                cfg.dataset_folder, train=False, download=True
             ),
         }
 
@@ -54,10 +54,10 @@ def get_dataset(cfg: config_dict.ConfigDict):
     elif cfg.target == "cifar10":
         cifar10 = {
             "train": torchvision.datasets.CIFAR10(
-                "/scratch/nb3397/datasets", train=True, download=True
+                cfg.dataset_folder, train=True, download=True
             ),
             "test": torchvision.datasets.CIFAR10(
-                "/scratch/nb3397/datasets", train=False, download=True
+                cfg.dataset_folder, train=False, download=True
             ),
         }
 
