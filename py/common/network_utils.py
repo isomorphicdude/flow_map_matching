@@ -10,8 +10,8 @@ import jax.numpy as np
 from typing import Callable
 import flax.linen as nn
 from ml_collections import config_dict
-from common import diffusers_unet as diffusers_unet
-
+# from common import diffusers_unet as diffusers_unet
+#TODO: enable diffusers if needed
 
 class MLP(nn.Module):
     """Simple MLP network with square weight pattern."""
@@ -116,7 +116,7 @@ def setup_network(
             n_hidden=config.n_hidden,
             n_neurons=config.n_neurons,
             output_dim=config.d,
-            act=get_act(config),
+            act=jax.nn.gelu,
         )
     elif config.network_type == "diffusers_unet":
         return DiffusersFlowMapUNet(config=config)
